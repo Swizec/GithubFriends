@@ -9,6 +9,8 @@ var OAuth = require('oauth').OAuth;
 var settings = require('./local_settings');
 var querystring = require('querystring');
 var twitter = require('twitter');
+var GitHubApi = require('github').GitHubApi;
+var github = new GitHubApi(true);
 
 var app = module.exports = express.createServer();
 
@@ -43,7 +45,7 @@ function require_twitter_login(req, res, next) {
 
 // Routes
 
-app.get('/', require_twitter_login, function(req, res){
+app.get('/', require_twitter_login, require_twitter_login, function(req, res){
   res.render('index', {
     title: 'Express'
   });
@@ -99,7 +101,33 @@ app.get('/twitter_login/callback', function (req, res) {
         });
 });
 
+app.get('/friends', function (req, res) {
+    var twit = new twitter({
+        consumer_key: settings.twitter.key,
+        consumer_secret: settings.twitter.secret,
+        access_token_key: req.session.oauth_access_token,
+        access_token_secret: req.session.oauth_access_token_secret
+    });
 
+    var userId = req.param('user');
+    var userapi = github.getUserApi();
+
+    var githubify = function (user) {
+        userapi.search(user.name.replace(' ', '+'), function (err, data) {
+            if (data.length > 0) {
+                users[userId].now.show_friends(data);
+            }
+        });
+    };
+
+    twit.get('/friends/ids.json', function (ids) {
+        for (var i=0; i<ids.length; i++) {
+            twit.showUser(ids[i], githubify);
+        }
+    });
+
+    //res.end();
+});
 
 var everyone = nowjs.initialize(app);
 var users = [];
