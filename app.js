@@ -101,6 +101,66 @@ app.get('/twitter_login/callback', function (req, res) {
         });
 });
 
+var github_ring =  {
+    queue: [],
+
+    userapi: github.getUserApi(),
+
+    next: function () {
+        var info = this.queue.pop();
+        if (!info) return;
+
+        console.log("nexting ", this.queue.length);
+
+        this.userapi.search(info.t.name.replace(' ', '+'), function (err, data) {
+            if (err) {
+                console.log(err);
+            }else{
+                if (data.length > 0) {
+                    for (var i=0; i<data.length; i++) {
+                        data[i].twitter_username = info.t.screen_name;
+                    }
+                    users[info.id].now.show_friends(data);
+                }
+            }
+        });
+    },
+
+    add: function (twitter_user, userId) {
+        this.queue.unshift({t: twitter_user,
+                            id: userId});
+    }
+};
+
+var twitter_ring = {
+    queue: [],
+
+    next: function () {
+        var info = this.queue.pop();
+        if (!info) return;
+
+        console.log("fetching user ", this.queue.length);
+        info.twit.showUser(info.t, function (user) {
+            console.log("adding", github_ring.queue.length);
+            github_ring.add(user, info.id);
+        });
+    },
+
+    add: function (twitter_id, userId, twit) {
+        console.log("twittering");
+        this.queue.unshift({t: twitter_id,
+                            id: userId,
+                            twit: twit});
+    }
+};
+
+setInterval(function () {
+    process.nextTick(function () {github_ring.next();});
+}, 1000);
+setInterval(function () {
+    process.nextTick(function () {twitter_ring.next();});
+}, 1000);
+
 app.get('/friends', function (req, res) {
     var twit = new twitter({
         consumer_key: settings.twitter.key,
@@ -110,26 +170,23 @@ app.get('/friends', function (req, res) {
     });
 
     var userId = req.param('user');
-    var userapi = github.getUserApi();
-
-    var githubify = function (user) {
-        userapi.search(user.name.replace(' ', '+'), function (err, data) {
-            if (data.length > 0) {
-                users[userId].now.show_friends(data);
-            }
-        });
-    };
 
     twit.get('/friends/ids.json', function (ids) {
-        for (var i=0; i<ids.length; i++) {
-            twit.showUser(ids[i], githubify);
-        }
+        twit.get('/user/lookup.json', {user_id: ids.splice(0, 20).join(',')},
+                 function (err, data) {
+                     console.log(ids.splice(0, 20).join(','));
+                     console.log(err);
+                     console.log(data);
+                 });
+/*        for (var i=0; i<ids.length; i++) {
+            twitter_ring.add(ids[i], userId, twit);
+       }*/
     });
 
     //res.end();
 });
 
-var everyone = nowjs.initialize(app);
+var everyone = nowjs.initialize(app, {host: 'githubfriends.swizec.com', port: 80});
 var users = [];
 
 everyone.now.initiate = function (callback) {

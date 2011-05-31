@@ -1,7 +1,6 @@
 
 $(function(){
     now.show_friends = function (friends) {
-        console.log("show!");
         Friends.add(_.map(friends, function (friend) {;
             return new Friend(friend);
         }));
