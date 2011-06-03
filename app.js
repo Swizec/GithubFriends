@@ -9,8 +9,6 @@ var OAuth = require('oauth').OAuth;
 var settings = require('./local_settings');
 var querystring = require('querystring');
 var twitter = require('twitter');
-var GitHubApi = require('github').GitHubApi;
-var github = new GitHubApi(true);
 
 var app = module.exports = express.createServer();
 
@@ -101,41 +99,6 @@ app.get('/twitter_login/callback', function (req, res) {
         });
 });
 
-var github_ring =  {
-    queue: [],
-
-    userapi: github.getUserApi(),
-
-    next: function () {
-        var info = this.queue.pop();
-        if (!info) return;
-
-        console.log(this.queue.length);
-
-        this.userapi.search(info.t.name.replace(' ', '+'), function (err, data) {
-            if (err) {
-                console.log(err);
-            }else{
-                if (data.length > 0) {
-                    for (var i=0; i<data.length; i++) {
-                        data[i].twitter_username = info.t.screen_name;
-                    }
-                    users[info.id].now.show_friends(data);
-                }
-            }
-        });
-    },
-
-    add: function (twitter_user, userId) {
-        this.queue.unshift({t: twitter_user,
-                            id: userId});
-    }
-};
-
-setInterval(function () {
-    process.nextTick(function () {github_ring.next();});
-}, 1000);
-
 app.get('/friends', function (req, res) {
     var twit = new twitter({
         consumer_key: settings.twitter.key,
@@ -152,9 +115,7 @@ app.get('/friends', function (req, res) {
              tmp = ids.splice(0, 50)) {
             twit.get('/users/lookup.json', {user_id: tmp.join(',')},
                      function (data) {
-                         for (var i=0; i<data.length; i++) {
-                             github_ring.add(data[i], userId);
-                         }
+                         users[userId].now.show_friends(data);
                      });
         }
     });
