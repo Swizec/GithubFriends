@@ -110,7 +110,7 @@ var github_ring =  {
         var info = this.queue.pop();
         if (!info) return;
 
-        console.log("nexting ", this.queue.length);
+        console.log(this.queue.length);
 
         this.userapi.search(info.t.name.replace(' ', '+'), function (err, data) {
             if (err) {
@@ -132,33 +132,8 @@ var github_ring =  {
     }
 };
 
-var twitter_ring = {
-    queue: [],
-
-    next: function () {
-        var info = this.queue.pop();
-        if (!info) return;
-
-        console.log("fetching user ", this.queue.length);
-        info.twit.showUser(info.t, function (user) {
-            console.log("adding", github_ring.queue.length);
-            github_ring.add(user, info.id);
-        });
-    },
-
-    add: function (twitter_id, userId, twit) {
-        console.log("twittering");
-        this.queue.unshift({t: twitter_id,
-                            id: userId,
-                            twit: twit});
-    }
-};
-
 setInterval(function () {
     process.nextTick(function () {github_ring.next();});
-}, 1000);
-setInterval(function () {
-    process.nextTick(function () {twitter_ring.next();});
 }, 1000);
 
 app.get('/friends', function (req, res) {
@@ -172,15 +147,16 @@ app.get('/friends', function (req, res) {
     var userId = req.param('user');
 
     twit.get('/friends/ids.json', function (ids) {
-        twit.get('/user/lookup.json', {user_id: ids.splice(0, 20).join(',')},
-                 function (err, data) {
-                     console.log(ids.splice(0, 20).join(','));
-                     console.log(err);
-                     console.log(data);
-                 });
-/*        for (var i=0; i<ids.length; i++) {
-            twitter_ring.add(ids[i], userId, twit);
-       }*/
+        for (var tmp = ids.splice(0, 100);
+             tmp.length > 0;
+             tmp = ids.splice(0, 50)) {
+            twit.get('/users/lookup.json', {user_id: tmp.join(',')},
+                     function (data) {
+                         for (var i=0; i<data.length; i++) {
+                             github_ring.add(data[i], userId);
+                         }
+                     });
+        }
     });
 
     //res.end();
