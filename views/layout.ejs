@@ -26,7 +26,7 @@
 
                 <div id="friend-template" style="display: none">
                   <img src="http://gravatar.com/avatar/${gravatar_id}" />
-                  ${fullname}
+                  <a href="http://github.com/${login}">${fullname}</a>, ${twitter_username}
                 </div>
 
 		<footer>
@@ -39,6 +39,7 @@
         <script src="/nowjs/now.js"></script>
 	<script src="/js/plugins.js"></script>
 	<script src="/js/script.js"></script>
+
 	<!--[if lt IE 7 ]>
 	<script src="js/libs/dd_belatedpng.js"></script>
 	<script> DD_belatedPNG.fix('img, .png_bg');</script>

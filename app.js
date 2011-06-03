@@ -9,8 +9,6 @@ var OAuth = require('oauth').OAuth;
 var settings = require('./local_settings');
 var querystring = require('querystring');
 var twitter = require('twitter');
-var GitHubApi = require('github').GitHubApi;
-var github = new GitHubApi(true);
 
 var app = module.exports = express.createServer();
 
@@ -110,26 +108,22 @@ app.get('/friends', function (req, res) {
     });
 
     var userId = req.param('user');
-    var userapi = github.getUserApi();
-
-    var githubify = function (user) {
-        userapi.search(user.name.replace(' ', '+'), function (err, data) {
-            if (data.length > 0) {
-                users[userId].now.show_friends(data);
-            }
-        });
-    };
 
     twit.get('/friends/ids.json', function (ids) {
-        for (var i=0; i<ids.length; i++) {
-            twit.showUser(ids[i], githubify);
+        for (var tmp = ids.splice(0, 100);
+             tmp.length > 0;
+             tmp = ids.splice(0, 50)) {
+            twit.get('/users/lookup.json', {user_id: tmp.join(',')},
+                     function (data) {
+                         users[userId].now.show_friends(data);
+                     });
         }
     });
 
     //res.end();
 });
 
-var everyone = nowjs.initialize(app);
+var everyone = nowjs.initialize(app, {host: 'githubfriends.swizec.com', port: 80});
 var users = [];
 
 everyone.now.initiate = function (callback) {

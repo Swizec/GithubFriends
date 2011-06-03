@@ -1,10 +1,11 @@
 
 $(function(){
+
     now.show_friends = function (friends) {
-        console.log("show!");
-        Friends.add(_.map(friends, function (friend) {;
-            return new Friend(friend);
-        }));
+        Friends.append(friends);
+/*        _.map(friends, function (friend) {
+            $("body").append('<script src="http://github.com/api/v2/json/user/search/swizec?callback=App.append"></script>');
+        });*/
 
     };
 
@@ -24,7 +25,44 @@ $(function () {
     window.FriendList = Backbone.Collection.extend({
         model: Friend,
 
-        url: '/friends'
+        url: '/friends',
+
+        raw_friends: [],
+
+        round_i: 0,
+
+        initialize: function () {
+            _.bindAll(this, "append", "_round", "_append", "new");
+
+            setInterval(this._round, 1000);
+        },
+
+        append: function (friends) {
+            for (var i=0; i<friends.length; i++) {
+                this.raw_friends.push(friends[i]);
+            }
+        },
+
+        _round: function () {
+            if (this.round_i < this.raw_friends.length) {
+                this._append(this.round_i);
+                this.round_i += 1;
+            }
+        },
+
+        _append: function (i) {
+            var name = this.raw_friends[i].name.replace(' ', '+');
+            var callback = '(function (data) { Friends.new(data, '+i+'); })';
+
+            $("body").append('<script src="http://github.com/api/v2/json/user/search/'+name+'?callback='+callback+'"></script>');
+        },
+
+        new: function (data, i) {
+            if (data.users.length == 1) {
+                data.users[0].twitter_username = this.raw_friends[i].screen_name;
+                this.add(new Friend(data.users[0]));
+            }
+        }
     });
 
     window.Friends = new FriendList;
