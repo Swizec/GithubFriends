@@ -41,6 +41,7 @@ $(function () {
 
         _round: function () {
             if (this.round_i < this.raw_friends.length) {
+                this.trigger("processing", this.raw_friends[this.round_i]);
                 this._append(this.round_i);
                 this.round_i += 1;
             }
@@ -83,10 +84,35 @@ $(function () {
         }
     });
 
+    window.LoaderView = Backbone.View.extend({
+        template: $("#loader-template"),
+
+        el: $("#loader"),
+
+        data: {},
+
+        initialize: function () {
+            _.bindAll(this, "render");
+
+            var self = this;
+
+            Friends.bind("processing", function (user) {
+                self.data = user;
+                self.render();
+            });
+        },
+
+        render: function () {
+            this.el.html(this.template.tmpl(this.data));
+        }
+    });
+
     window.AppView = Backbone.View.extend({
         el: $("#main"),
 
         initialize: function () {
+            this.loader = new LoaderView;
+
             Friends.bind("add", function (friend) {
                 var view = new FriendView({model: friend});
                 App.el.append(view.render());
