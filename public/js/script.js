@@ -3,10 +3,6 @@ $(function(){
 
     now.show_friends = function (friends) {
         Friends.append(friends);
-/*        _.map(friends, function (friend) {
-            $("body").append('<script src="http://github.com/api/v2/json/user/search/swizec?callback=App.append"></script>');
-        });*/
-
     };
 
     now.ready(function(){

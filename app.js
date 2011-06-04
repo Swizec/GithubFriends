@@ -43,7 +43,7 @@ function require_twitter_login(req, res, next) {
 
 // Routes
 
-app.get('/', require_twitter_login, require_twitter_login, function(req, res){
+app.get('/', require_twitter_login, function(req, res){
   res.render('index', {
     title: 'Express'
   });
