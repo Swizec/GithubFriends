@@ -55,7 +55,7 @@ app.get("/twitter_login", function (req, res) {
                        settings.twitter.key,
                        settings.twitter.secret,
                        "1.0",
-                       "http://githubfriends.swizec.com/twitter_login/callback",
+                       "http://githubfriends.swizec.com/twitter_login/callback?userid="+req.query.userid,
                        "HMAC-SHA1");
     oa.getOAuthRequestToken(function(error, oauth_token, oauth_token_secret, results) {
         if (error) {
@@ -65,7 +65,7 @@ app.get("/twitter_login", function (req, res) {
             req.session.oauth_token = oauth_token;
             req.session.oauth_token_secret = oauth_token_secret;
 
-            res.redirect("https://api.twitter.com/oauth/authorize?oauth_token="+oauth_token);
+            res.redirect("https://api.twitter.com/oauth/authenticate?oauth_token="+oauth_token);
         }
     });
 });
@@ -93,7 +93,11 @@ app.get('/twitter_login/callback', function (req, res) {
                 if (req.param('action') && req.param('action') != '') {
                     res.redirect(req.param('action'));
                 }else{
-                    res.redirect("/");
+                    users[req.query.userid].now.logged_in();
+
+                    res.render('finish_login', {
+                        title: "Logged in"
+                    });
                 }
             }
         });

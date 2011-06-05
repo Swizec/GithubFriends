@@ -5,11 +5,16 @@ $(function(){
         Friends.append(friends);
     };
 
+    now.logged_in = function () {
+        console.log("LOGGED IN!");
+    };
+
     now.ready(function(){
         now.initiate(function (clientId) {
             console.log("I am client "+clientId);
 
-            $.getJSON('/friends', {user: clientId}, function () {});
+            $("#login-twitter").attr("href", "/twitter_login?userid="+clientId);
+            //$.getJSON('/friends', {user: clientId}, function () {});
         });
     });
 });
