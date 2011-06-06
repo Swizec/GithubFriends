@@ -11,9 +11,16 @@ $(function(){
 
     now.ready(function(){
         now.initiate(function (clientId) {
-            App.enable_login(clientId);
+            if (!LOGGED_IN) {
+                App.enable_login(clientId);
+            }else{
+                App.clientId = clientId;
+                App.logged_in();
+            }
         });
     });
+
+    $("#main").css({height:($(document).height()-2)+"px"});
 });
 
 $(function () {
@@ -58,7 +65,7 @@ $(function () {
 
         new: function (data, i) {
             if (data.users.length == 1) {
-                data.users[0].twitter_username = this.raw_friends[i].screen_name;
+                data.users[0].twitter = this.raw_friends[i];
                 this.add(new Friend(data.users[0]));
             }
         }
@@ -67,7 +74,7 @@ $(function () {
     window.Friends = new FriendList;
 
     window.FriendView = Backbone.View.extend({
-        tagName: 'ul',
+        tagName: 'li',
 
         template: $("#friend-template"),
 
@@ -98,6 +105,8 @@ $(function () {
 
             var self = this;
 
+            this.fadeTime = $(window).width()/60/2*1000;
+
             Friends.bind("processing", function (user) {
                 self.data = user;
                 self.render();
@@ -105,22 +114,45 @@ $(function () {
         },
 
         render: function () {
-            this.el.html(this.template.tmpl(this.data));
+
+            var $item = $("<div></div>");
+            $item.html(this.template.tmpl(this.data))
+                 .addClass('item');
+
+            this.el.prepend($item);
+
+            var self = this;
+            $item.css({opacity: 0})
+                 .animate({opacity: 1.0},
+                          self.fadeTime,
+                         function () {
+                             $(this).animate({opacity: 0},
+                                             self.fadeTime);
+                         });
+        }
+    });
+
+    window.UserView = Backbone.View.extend({
+        template: $("#user-template"),
+        el: $("#user"),
+
+        initialize: function (data) {
+            this.el.html(this.template.tmpl(data));
+            this.el.fadeIn("slow");
         }
     });
 
     window.AppView = Backbone.View.extend({
         el: $("#main"),
 
+	$results: $("#results"),
+
         initialize: function () {
-            _.bindAll(this, "enable_login", "logged_in");
+            _.bindAll(this, "enable_login", "logged_in", "append_friend");
 
             this.loader = new LoaderView;
 
-            Friends.bind("add", function (friend) {
-                var view = new FriendView({model: friend});
-                App.el.append(view.render());
-            });
+            Friends.bind("add", this.append_friend);
         },
 
         enable_login: function (clientId) {
@@ -139,9 +171,30 @@ $(function () {
         },
 
         logged_in: function () {
-            this.PopUp.close();
+            try {
+                this.PopUp.close();
+            }catch (e) {}
+
+            $("#login-twitter").fadeOut("slow");
+
+            $.getJSON('/user', function (data) {
+                App.userView = new UserView(data);
+            });
 
             $.getJSON('/friends', {user: this.clientId}, function () {});
+        },
+
+        append_friend: function (friend) {
+            var view = new FriendView({model: friend});
+            var $view = view.render();
+            var $column = this.$results.find('.column').last();
+
+            $column.append($view);
+
+            if ($column.children().size()*$view.outerHeight()
+                >= this.$results.height()) {
+                $column = this.$results.append('<ul class="column"></ul>');
+            }
         }
     });
 

@@ -9,6 +9,7 @@ var OAuth = require('oauth').OAuth;
 var settings = require('./local_settings');
 var querystring = require('querystring');
 var twitter = require('twitter');
+var RedisStore = require('connect-redis')(require('connect'));
 
 var app = module.exports = express.createServer();
 
@@ -20,7 +21,8 @@ app.configure(function(){
   app.use(express.bodyParser());
   app.use(express.methodOverride());
   app.use(express.cookieParser());
-  app.use(express.session({ secret: 'your secret here' }));
+  app.use(express.session({ secret: 'this is my dirty little secret',
+                            store: new RedisStore}));
   app.use(app.router);
   app.use(express.static(__dirname + '/public'));
 });
@@ -44,9 +46,11 @@ function require_twitter_login(req, res, next) {
 // Routes
 
 app.get('/', function(req, res){
-  res.render('index', {
-    title: 'Express'
-  });
+    console.log(req.session.oauth_access_token);
+    res.render('index', {
+        title: 'Express',
+        user_logged_in: null != req.session.oauth_access_token
+    });
 });
 
 app.get("/twitter_login", function (req, res) {
@@ -126,6 +130,20 @@ app.get('/friends', function (req, res) {
     });
 
     //res.end();
+});
+
+app.get('/user', function (req, res) {
+    var twit = new twitter({
+        consumer_key: settings.twitter.key,
+        consumer_secret: settings.twitter.secret,
+        access_token_key: req.session.oauth_access_token,
+        access_token_secret: req.session.oauth_access_token_secret
+    });
+
+    twit.get('/statuses/user_timeline.json', function (data) {
+        res.header('Content-Type', 'application/json');
+        res.end(JSON.stringify(data[0].user));
+    });
 });
 
 var everyone = nowjs.initialize(app, {host: 'githubfriends.swizec.com', port: 80});

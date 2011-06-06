@@ -1,16 +1,32 @@
 
-<a href="#" target="_blank" id="login-twitter"><img src="/images/sign-in-with-twitter-l.png" /></a>
+<% if (user_logged_in) { %>
+<script>LOGGED_IN = true;</script>
+<% }else{ %>
+<script>LOGGED_IN = false;</script>
+<% } %>
 
-<div id="loader"></div>
+<a href="#" id="login-twitter"><img src="/images/sign-in-with-twitter-l.png" /></a>
+<div id="user"></div>
+<div id="user-template" style="display: none">Hello <a href="http://twitter.com/${screen_name}">${screen_name}</a>, here are your Github friends:</div>
 
-<div id="loader-template" style="display: none">
-  Processing ...
-  <a href="http://twitter.com/${screen_name}">
-    <img src="${profile_image_url}" /> ${screen_name}
+<div id="friend-template" style="display: none" class="result">
+  <a href="http://github.com/${login}">
+     <img src="http://gravatar.com/avatar/${gravatar_id}" title="${login}" />
   </a>
+  <ul>
+     <li class="name">
+        {{if name}}
+             ${name}
+	{{else}}
+	     ${login}
+        {{/if}}
+     </li>
+     <li>${location}</li>
+     <li>Repos: ${public_repo_count}</li>
+     <li>Followers: ${followers_count}</li>
+  </ul>
 </div>
 
-<div id="friend-template" style="display: none">
-  <img src="http://gravatar.com/avatar/${gravatar_id}" />
-  <a href="http://github.com/${login}">${fullname}</a>, ${twitter_username}
+<div id="results">
+  <ul class="column"></ul>
 </div>
