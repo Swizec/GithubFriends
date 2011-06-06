@@ -161,6 +161,8 @@ $(function () {
         logged_in: function () {
             this.PopUp.close();
 
+            $("#login-twitter").fadeOut("slow");
+
             $.getJSON('/friends', {user: this.clientId}, function () {});
         }
     });
