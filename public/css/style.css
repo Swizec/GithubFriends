@@ -132,6 +132,10 @@ header #loader img {
     margin: 0px;
 }
 
+#results {
+    overflow: auto;
+}
+
 #results ul.column {
     width: 300px;
     display: inline-block;
