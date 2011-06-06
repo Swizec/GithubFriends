@@ -14,6 +14,8 @@ $(function(){
             App.enable_login(clientId);
         });
     });
+
+    $("#main").css({height:($(document).height()-2)+"px"});
 });
 
 $(function () {
