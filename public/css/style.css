@@ -132,13 +132,23 @@ header #loader img {
     margin: 0px;
 }
 
+
 #results {
     overflow: auto;
+    height: 100%;
+    max-height: 100%;
+
+    display: -webkit-box !important;
+    -webkit-box-orient: horizontal;
+    display: -moz-box !important;
+    -moz-box-orient: horizontal;
+    display: box !important;
+    box-orient: horizontal;
+    vertical-align: top;
 }
 
 #results ul.column {
     width: 300px;
-    display: inline-block;
     vertical-align: top;
 }
 
