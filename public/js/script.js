@@ -5,11 +5,13 @@ $(function(){
         Friends.append(friends);
     };
 
+    now.logged_in = function () {
+        App.logged_in();
+    };
+
     now.ready(function(){
         now.initiate(function (clientId) {
-            console.log("I am client "+clientId);
-
-            $.getJSON('/friends', {user: clientId}, function () {});
+            App.enable_login(clientId);
         });
     });
 });
@@ -111,12 +113,35 @@ $(function () {
         el: $("#main"),
 
         initialize: function () {
+            _.bindAll(this, "enable_login", "logged_in");
+
             this.loader = new LoaderView;
 
             Friends.bind("add", function (friend) {
                 var view = new FriendView({model: friend});
                 App.el.append(view.render());
             });
+        },
+
+        enable_login: function (clientId) {
+            this.clientId = clientId;
+
+            var url = "/twitter_login?userid="+clientId;
+
+            $("#login-twitter").attr("href", url)
+                               .click(function (event) {
+                                   event.preventDefault();
+
+                                   App.PopUp = window.open(url,
+                                                           'Login',
+                                                           'width=600,height=400');
+                               });
+        },
+
+        logged_in: function () {
+            this.PopUp.close();
+
+            $.getJSON('/friends', {user: this.clientId}, function () {});
         }
     });
 
