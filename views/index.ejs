@@ -1,7 +1,13 @@
 
+<% if (user_logged_in) { %>
+<script>LOGGED_IN = true;</script>
+<% }else{ %>
+<script>LOGGED_IN = false;</script>
+<% } %>
+
 <a href="#" id="login-twitter"><img src="/images/sign-in-with-twitter-l.png" /></a>
 <div id="user"></div>
-<div id="user-template" style="display: none">Welcome <a href="http://twitter.com/${screen_name}">${screen_name}</a>, here are your Github friends</div>
+<div id="user-template" style="display: none">Welcome <a href="http://twitter.com/${screen_name}">${screen_name}</a>, here are your Github friends:</div>
 
 <div id="loader"></div>
 

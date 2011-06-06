@@ -11,7 +11,11 @@ $(function(){
 
     now.ready(function(){
         now.initiate(function (clientId) {
-            App.enable_login(clientId);
+            if (!LOGGED_IN) {
+                App.enable_login(clientId);
+            }else{
+                App.logged_in();
+            }
         });
     });
 });
@@ -149,7 +153,9 @@ $(function () {
         },
 
         logged_in: function () {
-            this.PopUp.close();
+            try {
+                this.PopUp.close();
+            }catch (e) {}
 
             $.getJSON('/user', function (data) {
                 App.userView = new UserView(data);
