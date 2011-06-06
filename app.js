@@ -128,6 +128,20 @@ app.get('/friends', function (req, res) {
     //res.end();
 });
 
+app.get('/user', function (req, res) {
+    var twit = new twitter({
+        consumer_key: settings.twitter.key,
+        consumer_secret: settings.twitter.secret,
+        access_token_key: req.session.oauth_access_token,
+        access_token_secret: req.session.oauth_access_token_secret
+    });
+
+    twit.get('/statuses/user_timeline.json', function (data) {
+        res.header('Content-Type', 'application/json');
+        res.end(JSON.stringify(data[0].user));
+    });
+});
+
 var everyone = nowjs.initialize(app, {host: 'githubfriends.swizec.com', port: 80});
 var users = [];
 

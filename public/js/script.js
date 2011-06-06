@@ -109,6 +109,16 @@ $(function () {
         }
     });
 
+    window.UserView = Backbone.View.extend({
+        template: $("#user-template"),
+        el: $("#user"),
+
+        initialize: function (data) {
+            this.el.html(this.template.tmpl(data));
+            this.el.fadeIn("slow");
+        }
+    });
+
     window.AppView = Backbone.View.extend({
         el: $("#main"),
 
@@ -141,6 +151,9 @@ $(function () {
         logged_in: function () {
             this.PopUp.close();
 
+            $.getJSON('/user', function (data) {
+                App.userView = new UserView(data);
+            });
             $.getJSON('/friends', {user: this.clientId}, function () {});
         }
     });
