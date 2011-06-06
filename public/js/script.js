@@ -60,7 +60,7 @@ $(function () {
 
         new: function (data, i) {
             if (data.users.length == 1) {
-                data.users[0].twitter_username = this.raw_friends[i].screen_name;
+                data.users[0].twitter = this.raw_friends[i];
                 this.add(new Friend(data.users[0]));
             }
         }
@@ -69,7 +69,7 @@ $(function () {
     window.Friends = new FriendList;
 
     window.FriendView = Backbone.View.extend({
-        tagName: 'ul',
+        tagName: 'li',
 
         template: $("#friend-template"),
 
@@ -130,6 +130,8 @@ $(function () {
     window.AppView = Backbone.View.extend({
         el: $("#main"),
 
+	$results: $("#results"),
+
         initialize: function () {
             _.bindAll(this, "enable_login", "logged_in");
 
@@ -137,7 +139,7 @@ $(function () {
 
             Friends.bind("add", function (friend) {
                 var view = new FriendView({model: friend});
-                App.el.append(view.render());
+                App.$results.append(view.render());
             });
         },
 

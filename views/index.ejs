@@ -1,7 +1,17 @@
 
 <a href="#" target="_blank" id="login-twitter"><img src="/images/sign-in-with-twitter-l.png" /></a>
 
-<div id="friend-template" style="display: none">
-  <img src="http://gravatar.com/avatar/${gravatar_id}" />
-  <a href="http://github.com/${login}">${fullname}</a>, ${twitter_username}
+<div id="friend-template" style="display: none" class="result">
+  <a href="http://github.com/${login}">
+     <img src="http://gravatar.com/avatar/${gravatar_id}" title="${login}" />
+  </a>
+  <ul>
+     <li class="name">${name}</li>
+     <li>${location}</li>
+     <li>Repos: ${public_repo_count}</li>
+     <li>Followers: ${followers_count}</li>
+  </ul>
 </div>
+
+<ul id="results">
+</ul>

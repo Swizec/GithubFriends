@@ -86,10 +86,6 @@ a:hover { color: #036; }
     \\ ========================================== //
 */
 
-#main {
-    margin-top: 100px;
-}
-
 header {
     position: absolute;
     top: 0px;
@@ -120,6 +116,47 @@ header #loader a {
 header #loader img {
     width: 60px;
     height: 60px;
+}
+
+#main {
+    margin-top: 100px;
+}
+
+#results li {
+    width: 250px;
+    height: 80px;
+    display: block;
+    list-style: none;
+    margin: 1em;
+}
+
+#results li img {
+    width: 80px;
+    height: 80px;
+}
+
+#results li a {
+    display: inline-block;
+    width: 80px;
+    vertical-align: middle;
+}
+
+#results li ul {
+    display: inline-block;
+    margin: 0;
+    width: 160px;
+    vertical-align: middle;
+    margin-left: 0.5em;
+}
+
+#results li ul li {
+    display: block;
+    height: 1em;
+    margin: 0;
+}
+
+#results li ul li.name {
+    font-size: 1.5em;
 }
 
 .ir { display: block; text-indent: -999em; overflow: hidden; background-repeat: no-repeat; text-align: left; direction: ltr; }
