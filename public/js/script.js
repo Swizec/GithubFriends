@@ -133,14 +133,11 @@ $(function () {
 	$results: $("#results"),
 
         initialize: function () {
-            _.bindAll(this, "enable_login", "logged_in");
+            _.bindAll(this, "enable_login", "logged_in", "append_friend");
 
             this.loader = new LoaderView;
 
-            Friends.bind("add", function (friend) {
-                var view = new FriendView({model: friend});
-                App.$results.append(view.render());
-            });
+            Friends.bind("add", this.append_friend);
         },
 
         enable_login: function (clientId) {
@@ -164,6 +161,19 @@ $(function () {
             $("#login-twitter").fadeOut("slow");
 
             $.getJSON('/friends', {user: this.clientId}, function () {});
+        },
+
+        append_friend: function (friend) {
+            var view = new FriendView({model: friend});
+            var $view = view.render();
+            var $column = this.$results.find('.column').last();
+
+            $column.append($view);
+
+            if ($column.children().size()*$view.outerHeight()
+                >= this.$results.height()) {
+                $column = this.$results.append('<ul class="column"></ul>');
+            }
         }
     });
 
