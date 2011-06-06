@@ -14,6 +14,7 @@ $(function(){
             if (!LOGGED_IN) {
                 App.enable_login(clientId);
             }else{
+                App.clientId = clientId;
                 App.logged_in();
             }
         });
