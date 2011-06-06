@@ -6,7 +6,13 @@
      <img src="http://gravatar.com/avatar/${gravatar_id}" title="${login}" />
   </a>
   <ul>
-     <li class="name">${name}</li>
+     <li class="name">
+        {{ if name }}
+             ${name}
+	{{ else }}
+	     ${login}
+        {{/if}}
+     </li>
      <li>${location}</li>
      <li>Repos: ${public_repo_count}</li>
      <li>Followers: ${followers_count}</li>
