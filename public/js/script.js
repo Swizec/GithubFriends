@@ -6,15 +6,26 @@ $(function(){
     };
 
     now.logged_in = function () {
-        console.log("LOGGED IN!");
+        window.PopUp.close();
+
+        $.getJSON('/friends', {user: window.clientId}, function () {});
     };
 
     now.ready(function(){
         now.initiate(function (clientId) {
+            window.clientId = clientId;
             console.log("I am client "+clientId);
 
-            $("#login-twitter").attr("href", "/twitter_login?userid="+clientId);
-            //$.getJSON('/friends', {user: clientId}, function () {});
+            var url = "/twitter_login?userid="+clientId;
+
+            $("#login-twitter").attr("href", url)
+                               .click(function (event) {
+                                   event.preventDefault();
+
+                                   window.PopUp = window.open(url,
+                                                              'Login',
+                                                              'width=600,height=400');
+                               });
         });
     });
 });

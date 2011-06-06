@@ -93,11 +93,12 @@ app.get('/twitter_login/callback', function (req, res) {
                 if (req.param('action') && req.param('action') != '') {
                     res.redirect(req.param('action'));
                 }else{
-                    users[req.query.userid].now.logged_in();
+                    try {
+                        users[req.query.userid].now.logged_in();
+                    }catch (e) {
+                    }
 
-                    res.render('finish_login', {
-                        title: "Logged in"
-                    });
+                    res.end("Logged in, window should close itself");
                 }
             }
         });
