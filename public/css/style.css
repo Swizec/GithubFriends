@@ -100,9 +100,15 @@ header {
 }
 
 header #loader {
-    margin: 0 auto;
     height: 60px;
-    width: 250px;
+    max-height: 60px;
+    overflow: hidden;
+}
+
+header #loader .item {
+    float: left;
+    width: 60px;
+    opacity: 0;
 }
 
 header #loader a {
@@ -115,19 +121,6 @@ header #loader img {
     width: 60px;
     height: 60px;
 }
-
-header #loader ul {
-    margin: 0;
-    list-style: none;
-    display: inline-block;
-    height: 60px;
-    vertical-align: top;
-}
-
-header #loader ul li {
-    list-style: none;
-}
-
 
 .ir { display: block; text-indent: -999em; overflow: hidden; background-repeat: no-repeat; text-align: left; direction: ltr; }
 .hidden { display: none; visibility: hidden; }

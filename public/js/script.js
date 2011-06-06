@@ -100,6 +100,8 @@ $(function () {
 
             var self = this;
 
+            this.fadeTime = $(window).width()/60/2*1000;
+
             Friends.bind("processing", function (user) {
                 self.data = user;
                 self.render();
@@ -107,7 +109,21 @@ $(function () {
         },
 
         render: function () {
-            this.el.html(this.template.tmpl(this.data));
+
+            var $item = $("<div></div>");
+            $item.html(this.template.tmpl(this.data))
+                 .addClass('item');
+
+            this.el.prepend($item);
+
+            var self = this;
+            $item.css({opacity: 0})
+                 .animate({opacity: 1.0},
+                          self.fadeTime,
+                         function () {
+                             $(this).animate({opacity: 0},
+                                             self.fadeTime);
+                         });
         }
     });
 
