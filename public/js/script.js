@@ -11,7 +11,11 @@ $(function(){
 
     now.ready(function(){
         now.initiate(function (clientId) {
-            App.enable_login(clientId);
+            if (!LOGGED_IN) {
+                App.enable_login(clientId);
+            }else{
+                App.logged_in();
+            }
         });
     });
 
@@ -127,6 +131,16 @@ $(function () {
         }
     });
 
+    window.UserView = Backbone.View.extend({
+        template: $("#user-template"),
+        el: $("#user"),
+
+        initialize: function (data) {
+            this.el.html(this.template.tmpl(data));
+            this.el.fadeIn("slow");
+        }
+    });
+
     window.AppView = Backbone.View.extend({
         el: $("#main"),
 
@@ -156,9 +170,15 @@ $(function () {
         },
 
         logged_in: function () {
-            this.PopUp.close();
+            try {
+                this.PopUp.close();
+            }catch (e) {}
 
             $("#login-twitter").fadeOut("slow");
+
+            $.getJSON('/user', function (data) {
+                App.userView = new UserView(data);
+            });
 
             $.getJSON('/friends', {user: this.clientId}, function () {});
         },
