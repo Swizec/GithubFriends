@@ -144,13 +144,42 @@ $(function () {
         }
     });
 
+    window.ColumnView = Backbone.View.extend({
+	tagName: 'ul',
+
+	initialize: function () {
+	    _.bindAll(this, "render", "append");
+
+	    this.friends = [];
+	},
+
+	render: function () {
+	    var tmp = new FriendView({model: new Friend()});
+	    this.max_n = Math.floor(App.$results.height()/tmp.base_height);
+
+	    this.el = $(this.el).addClass("column");
+	    return this.el;
+	},
+
+	append: function (friend) {
+	    var view = new FriendView({model: friend});
+
+	    this.friends.push(view);
+	    this.el.append(view.render());
+
+            return this.friends.length >= this.max_n;
+	}
+    });
+
     window.AppView = Backbone.View.extend({
         el: $("#main"),
+
+	columns: [],
 
 	$results: $("#results"),
 
         initialize: function () {
-            _.bindAll(this, "enable_login", "logged_in", "append_friend");
+            _.bindAll(this, "enable_login", "logged_in", "append_friend", "new_column");
 
             this.loader = new LoaderView;
 
@@ -189,20 +218,20 @@ $(function () {
         },
 
         append_friend: function (friend) {
-            var view = new FriendView({model: friend});
-            var $view = view.render();
-            var $column = this.$results.find('.column').last();
+	    var column = _.last(this.columns);
+	    var full = column.append(friend);
+	    if (full === true) {
+		this.new_column();
+	    }
+        },
 
-	    var n = Math.floor(this.$results.height()/view.base_height);
-
-	    $column.height(better_height);
-	    $column.append($view);
-
-            if ($column.children().size() >= n) {
-                $column = this.$results.append('<ul class="column"></ul>');
-            }
-        }
+	new_column: function () {
+	    var column = new ColumnView;
+	    this.columns.push(column);
+	    this.$results.append(column.render());
+	}
     });
 
     window.App = new AppView;
+    App.new_column();
 });
