@@ -78,6 +78,8 @@ $(function () {
 
         template: $("#friend-template"),
 
+	base_height: $("#friend-template").outerHeight(),
+
         initialize: function () {
             _.bindAll(this, "render");
             this.model.bind('change', this.render);
@@ -152,6 +154,8 @@ $(function () {
 
             this.loader = new LoaderView;
 
+	    this.$results.height($(window).height()-$("header").outerHeight(true)-$("#login_stuff").outerHeight(true)-5);
+
             Friends.bind("add", this.append_friend);
         },
 
@@ -189,10 +193,12 @@ $(function () {
             var $view = view.render();
             var $column = this.$results.find('.column').last();
 
-            $column.append($view);
+	    var n = Math.floor(this.$results.height()/view.base_height);
 
-            if ($column.children().size()*$view.outerHeight()
-                >= this.$results.height()) {
+	    $column.height(better_height);
+	    $column.append($view);
+
+            if ($column.children().size() >= n) {
                 $column = this.$results.append('<ul class="column"></ul>');
             }
         }
