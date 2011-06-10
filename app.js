@@ -46,9 +46,8 @@ function require_twitter_login(req, res, next) {
 // Routes
 
 app.get('/', function(req, res){
-    console.log(req.session.oauth_access_token);
     res.render('index', {
-        title: 'Express',
+        title: 'GithubFriends',
         user_logged_in: null != req.session.oauth_access_token
     });
 });
@@ -144,6 +143,17 @@ app.get('/user', function (req, res) {
         res.header('Content-Type', 'application/json');
         res.end(JSON.stringify(data[0].user));
     });
+});
+
+app.get('/harvest', function (req, res) {
+    res.render('harvest', {
+        title: 'GithubFriends - email'
+    });
+});
+
+app.post('/harvest', function (req, res) {
+    res.write(req.body.name);
+    res.end(req.body.email);
 });
 
 var everyone = nowjs.initialize(app, {host: 'githubfriends.swizec.com', port: 80});
