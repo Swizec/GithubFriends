@@ -11,6 +11,7 @@ $(function(){
 
     now.ready(function(){
         now.initiate(function (clientId) {
+            App.clientId = clientId;
             if (!LOGGED_IN) {
                 App.enable_login(clientId);
             }else{
@@ -139,6 +140,8 @@ $(function () {
 
         enable_login: function (clientId) {
             this.clientId = clientId;
+
+            alert(clientId);
 
             var url = "/twitter_login?userid="+clientId;
 
