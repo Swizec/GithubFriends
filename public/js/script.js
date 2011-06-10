@@ -223,6 +223,8 @@ $(function () {
 	    if (full === true) {
 		this.new_column();
 	    }
+
+            $("#counter").html(Friends.length);
         },
 
 	new_column: function () {

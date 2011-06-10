@@ -46,7 +46,6 @@ function require_twitter_login(req, res, next) {
 // Routes
 
 app.get('/', function(req, res){
-    console.log(req.session.oauth_access_token);
     res.render('index', {
         title: 'Express',
         user_logged_in: null != req.session.oauth_access_token
