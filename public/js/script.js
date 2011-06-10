@@ -3,17 +3,19 @@ $(function(){
 
     now.show_friends = function (friends) {
         Friends.append(friends);
-/*        _.map(friends, function (friend) {
-            $("body").append('<script src="http://github.com/api/v2/json/user/search/swizec?callback=App.append"></script>');
-        });*/
+    };
 
+    now.logged_in = function () {
+        App.logged_in();
     };
 
     now.ready(function(){
         now.initiate(function (clientId) {
-            console.log("I am client "+clientId);
-
-            $.getJSON('/friends', {user: clientId}, function () {});
+            if (!LOGGED_IN) {
+                App.enable_login(clientId);
+            }else{
+                App.logged_in();
+            }
         });
     });
 });
@@ -45,6 +47,7 @@ $(function () {
 
         _round: function () {
             if (this.round_i < this.raw_friends.length) {
+                this.trigger("processing", this.raw_friends[this.round_i]);
                 this._append(this.round_i);
                 this.round_i += 1;
             }
@@ -87,14 +90,77 @@ $(function () {
         }
     });
 
+    window.LoaderView = Backbone.View.extend({
+        template: $("#loader-template"),
+
+        el: $("#loader"),
+
+        data: {},
+
+        initialize: function () {
+            _.bindAll(this, "render");
+
+            var self = this;
+
+            Friends.bind("processing", function (user) {
+                self.data = user;
+                self.render();
+            });
+        },
+
+        render: function () {
+            this.el.html(this.template.tmpl(this.data));
+        }
+    });
+
+    window.UserView = Backbone.View.extend({
+        template: $("#user-template"),
+        el: $("#user"),
+
+        initialize: function (data) {
+            this.el.html(this.template.tmpl(data));
+            this.el.fadeIn("slow");
+        }
+    });
+
     window.AppView = Backbone.View.extend({
         el: $("#main"),
 
         initialize: function () {
+            _.bindAll(this, "enable_login", "logged_in");
+
+            this.loader = new LoaderView;
+
             Friends.bind("add", function (friend) {
                 var view = new FriendView({model: friend});
                 App.el.append(view.render());
             });
+        },
+
+        enable_login: function (clientId) {
+            this.clientId = clientId;
+
+            var url = "/twitter_login?userid="+clientId;
+
+            $("#login-twitter").attr("href", url)
+                               .click(function (event) {
+                                   event.preventDefault();
+
+                                   App.PopUp = window.open(url,
+                                                           'Login',
+                                                           'width=600,height=400');
+                               });
+        },
+
+        logged_in: function () {
+            try {
+                this.PopUp.close();
+            }catch (e) {}
+
+            $.getJSON('/user', function (data) {
+                App.userView = new UserView(data);
+            });
+            $.getJSON('/friends', {user: this.clientId}, function () {});
         }
     });
 
