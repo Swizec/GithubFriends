@@ -219,11 +219,14 @@ $(function () {
         },
 
         start: function () {
-            //if (LOGGED_IN) {
-            //    this.el.css({disp;
-            //}else{
+            if (LOGGED_IN) {
+                this.$("#login").fadeOut("slow");
+                this.$("#email").fadeIn("slow");
+                this.trigger("logged_in");
+                this.hide(4);
+            }else{
                 this.enable_login();
-            //}
+            }
         },
 
         enable_login: function () {
