@@ -184,15 +184,13 @@ $(function () {
 
             this.loader = new LoaderView;
 
-	    this.$results.height($(window).height()-$("header").outerHeight(true)-$("#login_stuff").outerHeight(true)-5);
+	    this.$results.height($(window).height()-$("header").outerHeight(true)-$("#login_stuff").outerHeight(true)-$("#user").outerHeight(true)-5);
 
             Friends.bind("add", this.append_friend);
         },
 
         enable_login: function (clientId) {
             this.clientId = clientId;
-
-            alert(clientId);
 
             var url = "/twitter_login?userid="+clientId;
 

@@ -108,14 +108,16 @@ header #loader .item {
 }
 
 header #loader a {
-    display: inline-block
+    display: inline-block;
     margin: 0;
     vertical-align: top;
+}
 
 header #loader img {
     width: 60px;
     height: 60px;
 }
+
 
 #main {
     height: 100%;
@@ -206,7 +208,7 @@ header #loader img {
 
 #user {
     font-size: 1.3em;
-    padding: 1em;
+    padding: 0.5em;
     margin: 0;
 }
 
@@ -224,6 +226,16 @@ header #loader img {
     font-size: 1.5em;
     padding: 1em;
     font-weight: bold;
+}
+
+#frontpage {
+    position: absolute;
+    border: 1px solid red;
+    width: 400px;
+    height: 300px;
+    top: 200px;
+    left: 0px;
+    display: box;
 }
 
 
