@@ -22,7 +22,7 @@ app.configure(function(){
   app.use(express.bodyParser());
   app.use(express.methodOverride());
   app.use(express.cookieParser());
-  app.use(express.session({ secret: 'this is my dirty little secret',
+  app.use(express.session({ secret: 'this is my dirty ilettle secret',
                             store: new RedisStore}));
   app.use(app.router);
   app.use(express.static(__dirname + '/public'));
@@ -148,7 +148,8 @@ app.get('/user', function (req, res) {
 
 app.get('/harvest', function (req, res) {
     res.render('harvest', {
-        title: 'GithubFriends - email'
+        title: 'GithubFriends - email',
+        layout: false
     });
 });
 
@@ -167,9 +168,13 @@ app.post('/harvest', function (req, res) {
         update_existing: true
     }, function (success) {
         if (success === true) {
-            res.end("Subscribed!");
+            res.render('harvest_done',
+                       {subscribed: true,
+                        layout: false});
         }else{
-            res.end("There was an error");
+            res.render('harvest_done',
+                       {subscribed: false,
+                        layout: false});
         }
     });
 });
