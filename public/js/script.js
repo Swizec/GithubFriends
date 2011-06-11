@@ -180,7 +180,7 @@ $(function () {
 
             this.loader = new LoaderView;
 
-	    this.$results.height($(window).height()-$("header").outerHeight(true)-$("#login_stuff").outerHeight(true)-$("#user").outerHeight(true)-5);
+	    this.$results.height($(window).height()-$("header").outerHeight(true)-$("#login_stuff").outerHeight(true)-$("#user").outerHeight(true)-15);
 
             Friends.bind("add", this.append_friend);
             FrontPage.bind("logged_in", this.start_scrape);
