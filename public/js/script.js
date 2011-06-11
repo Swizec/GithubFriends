@@ -16,6 +16,21 @@ $(function(){
         });
     });
 
+    try {
+        window.mpmetrics = new MixpanelLib("445e7c07115ce5fa0c0a95e16d9bef2e");
+    } catch(err) {
+        var null_fn = function () {};
+        window.mpmetrics = {
+            track: null_fn,
+            track_funnel: null_fn,
+            register: null_fn,
+            register_once: null_fn,
+            register_funnel: null_fn,
+            identify: null_fn
+        };
+    }
+
+
     $("#main").css({height:($(document).height()-2)+"px"});
 });
 
@@ -87,6 +102,10 @@ $(function () {
 
             $el.addClass("person");
             $el.html(this.template.tmpl(this.model.toJSON()));
+            $el.find("a").click(function () {
+                mpmetrics.track("Result Click");
+            });
+
 
             return $el;
         }
@@ -236,10 +255,16 @@ $(function () {
                 .click(function (event) {
                     event.preventDefault();
 
+                    mpmetrics.track("Twitter login");
+
                     FrontPage.PopUp = window.open(url,
                                                   'Login',
                                                   'width=600,height=400');
                 });
+
+            this.$("iframe").contents().find("form").submit(function () {
+                mpmetrics.track("Gave email");
+            });
         },
 
         logged_in: function () {
