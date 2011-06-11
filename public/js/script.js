@@ -6,18 +6,13 @@ $(function(){
     };
 
     now.logged_in = function () {
-        App.logged_in();
+        FrontPage.logged_in();
     };
 
     now.ready(function(){
         now.initiate(function (clientId) {
             App.clientId = clientId;
-            if (!LOGGED_IN) {
-                App.enable_login(clientId);
-            }else{
-                App.clientId = clientId;
-                App.logged_in();
-            }
+            FrontPage.start();
         });
     });
 
@@ -180,42 +175,14 @@ $(function () {
 	$results: $("#results"),
 
         initialize: function () {
-            _.bindAll(this, "enable_login", "logged_in", "append_friend", "new_column");
+            _.bindAll(this, "append_friend", "new_column", "start_scrape");
 
             this.loader = new LoaderView;
 
 	    this.$results.height($(window).height()-$("header").outerHeight(true)-$("#login_stuff").outerHeight(true)-$("#user").outerHeight(true)-5);
 
             Friends.bind("add", this.append_friend);
-        },
-
-        enable_login: function (clientId) {
-            this.clientId = clientId;
-
-            var url = "/twitter_login?userid="+clientId;
-
-            $("#login-twitter").attr("href", url)
-                               .click(function (event) {
-                                   event.preventDefault();
-
-                                   App.PopUp = window.open(url,
-                                                           'Login',
-                                                           'width=600,height=400');
-                               });
-        },
-
-        logged_in: function () {
-            try {
-                this.PopUp.close();
-            }catch (e) {}
-
-            $("#login-twitter").fadeOut("slow");
-
-            $.getJSON('/user', function (data) {
-                App.userView = new UserView(data);
-            });
-
-            $.getJSON('/friends', {user: this.clientId}, function () {});
+            FrontPage.bind("logged_in", this.start_scrape);
         },
 
         append_friend: function (friend) {
@@ -232,9 +199,58 @@ $(function () {
 	    var column = new ColumnView;
 	    this.columns.push(column);
 	    this.$results.append(column.render());
-	}
+	},
+
+        start_scrape: function () {
+            $.getJSON('/user', function (data) {
+                App.userView = new UserView(data);
+            });
+
+            $.getJSON('/friends', {user: this.clientId}, function () {});
+        }
     });
 
+    window.FrontPageView = Backbone.View.extend({
+        el: $("#frontpage"),
+
+        initialize: function () {
+            _.bindAll(this, "start", "enable_login", "logged_in");
+        },
+
+        start: function () {
+            //if (LOGGED_IN) {
+            //    this.el.css({display: "none"});
+            //}else{
+                this.enable_login();
+            //}
+        },
+
+        enable_login: function () {
+            var url = "/twitter_login?userid="+App.clientId;
+
+            this.$("#login a").attr("href", url)
+                .click(function (event) {
+                    event.preventDefault();
+
+                    FrontPage.PopUp = window.open(url,
+                                                  'Login',
+                                                  'width=600,height=400');
+                });
+        },
+
+        logged_in: function () {
+            try {
+                this.PopUp.close();
+            }catch (e) {}
+
+            this.$("#login").fadeOut("slow");
+            this.$("#email").fadeIn("slow");
+
+            this.trigger("logged_in");
+        }
+    });
+
+    window.FrontPage = new FrontPageView;
     window.App = new AppView;
     App.new_column();
 });
