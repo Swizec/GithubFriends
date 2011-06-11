@@ -10,6 +10,7 @@ var settings = require('./local_settings');
 var querystring = require('querystring');
 var twitter = require('twitter');
 var RedisStore = require('connect-redis')(require('connect'));
+var MailChimpAPI = require('mailchimp').MailChimpAPI;
 
 var app = module.exports = express.createServer();
 
@@ -21,7 +22,7 @@ app.configure(function(){
   app.use(express.bodyParser());
   app.use(express.methodOverride());
   app.use(express.cookieParser());
-  app.use(express.session({ secret: 'this is my dirty little secret',
+  app.use(express.session({ secret: 'this is my dirty ilettle secret',
                             store: new RedisStore}));
   app.use(app.router);
   app.use(express.static(__dirname + '/public'));
@@ -47,7 +48,7 @@ function require_twitter_login(req, res, next) {
 
 app.get('/', function(req, res){
     res.render('index', {
-        title: 'Express',
+        title: 'GithubFriends',
         user_logged_in: null != req.session.oauth_access_token
     });
 });
@@ -142,6 +143,39 @@ app.get('/user', function (req, res) {
     twit.get('/statuses/user_timeline.json', function (data) {
         res.header('Content-Type', 'application/json');
         res.end(JSON.stringify(data[0].user));
+    });
+});
+
+app.get('/harvest', function (req, res) {
+    res.render('harvest', {
+        title: 'GithubFriends - email',
+        layout: false
+    });
+});
+
+app.post('/harvest', function (req, res) {
+    var api = new MailChimpAPI(settings.mailchimp,
+                               {version: '1.3', secure: false});
+
+    api.listSubscribe({
+        id: '20286a7f22',
+        email_address: req.body.email,
+        merge_vars: {FNAME: req.body.name,
+                     LNAME: '',
+                     MMERGE1: req.body.name},
+        double_optin: false,
+        send_welcome: true,
+        update_existing: true
+    }, function (success) {
+        if (success === true) {
+            res.render('harvest_done',
+                       {subscribed: true,
+                        layout: false});
+        }else{
+            res.render('harvest_done',
+                       {subscribed: false,
+                        layout: false});
+        }
     });
 });
 

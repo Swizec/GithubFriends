@@ -111,7 +111,6 @@ header #loader a {
     display: inline-block
     margin: 0;
     vertical-align: top;
-}
 
 header #loader img {
     width: 60px;
@@ -210,6 +209,23 @@ header #loader img {
     padding: 1em;
     margin: 0;
 }
+
+#harvest form {
+    font-size: 1.5em;
+}
+
+#harvest form input {
+    display: block;
+    margin: 1em;
+    padding: 0.2em;
+}
+
+#harvest p {
+    font-size: 1.5em;
+    padding: 1em;
+    font-weight: bold;
+}
+
 
 .ir { display: block; text-indent: -999em; overflow: hidden; background-repeat: no-repeat; text-align: left; direction: ltr; }
 .hidden { display: none; visibility: hidden; }
