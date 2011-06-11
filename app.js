@@ -10,6 +10,7 @@ var settings = require('./local_settings');
 var querystring = require('querystring');
 var twitter = require('twitter');
 var RedisStore = require('connect-redis')(require('connect'));
+var MailChimpAPI = require('mailchimp').MailChimpAPI;
 
 var app = module.exports = express.createServer();
 
@@ -152,8 +153,25 @@ app.get('/harvest', function (req, res) {
 });
 
 app.post('/harvest', function (req, res) {
-    res.write(req.body.name);
-    res.end(req.body.email);
+    var api = new MailChimpAPI(settings.mailchimp,
+                               {version: '1.3', secure: false});
+
+    api.listSubscribe({
+        id: '20286a7f22',
+        email_address: req.body.email,
+        merge_vars: {FNAME: req.body.name,
+                     LNAME: '',
+                     MMERGE1: req.body.name},
+        double_optin: false,
+        send_welcome: true,
+        update_existing: true
+    }, function (success) {
+        if (success === true) {
+            res.end("Subscribed!");
+        }else{
+            res.end("There was an error");
+        }
+    });
 });
 
 var everyone = nowjs.initialize(app, {host: 'githubfriends.swizec.com', port: 80});
