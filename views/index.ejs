@@ -25,9 +25,8 @@
 </div>
 
 <div id="friend-template" style="display: none" class="result">
-  <a href="http://github.com/${login}">
+  <a href="http://github.com/${login}" target="_blank">
      <img src="http://gravatar.com/avatar/${gravatar_id}" title="${login}" />
-  </a>
   <ul>
      <li class="name">
         {{if name}}
@@ -40,6 +39,7 @@
      <li>Repos: ${public_repo_count}</li>
      <li>Followers: ${followers_count}</li>
   </ul>
+  </a>
 </div>
 
 <div id="results">

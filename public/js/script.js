@@ -219,7 +219,7 @@ $(function () {
 
         start: function () {
             //if (LOGGED_IN) {
-            //    this.el.css({display: "none"});
+            //    this.el.css({disp;
             //}else{
                 this.enable_login();
             //}

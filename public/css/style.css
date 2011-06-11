@@ -178,12 +178,12 @@ header #loader img {
 #results li img {
     height: 70px;
     width: 70px;
+    vertical-align: middle;
 }
 
 #results li a {
-    display: block;
-    width: 80px;
-    vertical-align: middle;
+    text-decoration: none;
+    color: inherit;
 }
 
 #results li ul {
