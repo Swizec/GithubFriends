@@ -85,6 +85,7 @@ $(function () {
         render: function () {
             var $el = $(this.el);
 
+            $el.addClass("person");
             $el.html(this.template.tmpl(this.model.toJSON()));
 
             return $el;
@@ -214,7 +215,7 @@ $(function () {
         el: $("#frontpage"),
 
         initialize: function () {
-            _.bindAll(this, "start", "enable_login", "logged_in");
+            _.bindAll(this, "start", "enable_login", "logged_in", "hide");
         },
 
         start: function () {
@@ -246,7 +247,22 @@ $(function () {
             this.$("#login").fadeOut("slow");
             this.$("#email").fadeIn("slow");
 
+            this.hide(20);
+
             this.trigger("logged_in");
+        },
+
+        hide: function (seconds) {
+            if (seconds <= 0) {
+                this.el.fadeOut("slow",
+                                function () {
+                                    $(this).addClass("hidden");
+                                });
+            }
+
+            this.$("#countdown").html("Hiding in "+seconds+" seconds ...").css("display", "block");
+            var self = this;
+            setTimeout(function () { self.hide(seconds-1);  }, 1000);
         }
     });
 
