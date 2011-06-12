@@ -100,8 +100,8 @@ header #loader {
     max-height: 60px;
     overflow: hidden;
     position: absolute;
-    left: 0px;
     top: 0px;
+    left: 0px;
 }
 
 header #loader .item {
