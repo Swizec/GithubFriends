@@ -356,8 +356,8 @@ footer iframe {
     top: 5px;
 }
 
-footer a {
-    color: white;
+footer a, footer a:hover {
+    color: white !important;
 }
 
 
