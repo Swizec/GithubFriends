@@ -124,7 +124,9 @@ app.get('/friends', function (req, res) {
              tmp = ids.splice(0, 50)) {
             twit.get('/users/lookup.json', {user_id: tmp.join(',')},
                      function (data) {
-                         users[userId].now.show_friends(data);
+                         try {
+                             users[userId].now.show_friends(data);
+                         }catch (e) {};
                      });
         }
     });
@@ -189,6 +191,10 @@ everyone.now.initiate = function (callback) {
     users[this.user.clientId] = group;
     callback(this.user.clientId);
 };
+
+everyone.disconnected(function () {
+    delete(users[this.user.clientId]);
+});
 
 // TODO: when users vanish do some cleaning up so as to not hold their group indefinitely
 
