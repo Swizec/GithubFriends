@@ -86,6 +86,30 @@ a:hover { color: #036; }
     \\ ========================================== //
 */
 
+@font-face {
+    font-family: "HelveticaLight";
+    src: local("☺"), url("/fonts/HelveticaNeue-Light.otf");
+}
+
+@font-face {
+    font-family: "HelveticaLightItalic";
+    src: local("☺"), url("/fonts/HelveticaNeue-LightItalic.otf");
+}
+
+@font-face {
+    font-family: "HelveticaBold";
+    src: local("☺"), url("/fonts/HelveticaNeue-CondensedBold.otf");
+}
+
+body, input {
+    font-family: "HelveticaLight";
+    color: black;
+}
+
+em {
+    font-family: "HelveticaLightItalic";
+}
+
 a {
     -webkit-transition: all 200ms ease-in;
     -moz-transition: all 200ms ease-in;
@@ -236,6 +260,8 @@ header #loader a:hover img {
     height: 1em;
     margin: 0;
     padding: 0;
+    font-size: 1.1em;
+    line-height: 1.2em;
 }
 
 #results li ul li.name {
@@ -307,6 +333,7 @@ header #loader a:hover img {
 #frontpage h1 {
     font-size: 2.5em;
     margin-bottom: 1em;
+    font-family: "HelveticaBold";
 }
 
 #frontpage div {
