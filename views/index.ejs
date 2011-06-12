@@ -1,2 +1,48 @@
-<h1><%= title %></h1>
-<p>Welcome to <%= title %></p>
+
+<% if (user_logged_in) { %>
+<script>LOGGED_IN = true;</script>
+<% }else{ %>
+<script>LOGGED_IN = false;</script>
+<% } %>
+
+<div id="user">&nbsp;</div>
+<div id="user-template" style="display: none">Hello <a href="http://twitter.com/${screen_name}">${screen_name}</a>; I've found <span id="counter">0</span> of your friends on Github:</div>
+
+<div id="frontpage">
+   <div>
+      <h1>Github Friends</h1>
+      <p>Github friends suggests people you should follow on Github by looking at who you follow on twitter.</p>
+      <p>This is a Swizec Pet Project, there are others like it --> <a href="http://hipstervision.org" target="_blank">HipsterVision</a></p>
+   </div>
+   <div id="login" class="right">
+      <p>Find your friends on Github</p>
+      <a href="#"><img src="/images/sign-in-with-twitter-l.png" /></a>
+   </div>
+   <div id="email" class="right">
+      <p>Subscribe to the Swizec Pet Project beta mailing list</p>
+      <iframe src="/harvest"></iframe>
+   </div>
+   <div id="countdown"></div>
+</div>
+
+<div id="friend-template" style="display: none" class="result">
+  <a href="http://github.com/${login}" target="_blank">
+     <img src="http://gravatar.com/avatar/${gravatar_id}" title="${login}" />
+  <ul>
+     <li class="name">
+        {{if name}}
+             ${name}
+	{{else}}
+	     ${login}
+        {{/if}}
+     </li>
+     <li>${location}</li>
+     <li>Repos: ${public_repo_count}</li>
+     <li>Followers: ${followers_count}</li>
+  </ul>
+  </a>
+</div>
+
+<div id="results">
+
+</div>
