@@ -89,7 +89,7 @@ $(function () {
 
         template: $("#friend-template"),
 
-	base_height: $("#friend-template").outerHeight(),
+	base_height: $("#friend-template").height(),
 
         initialize: function () {
             _.bindAll(this, "render");
@@ -199,7 +199,7 @@ $(function () {
 
             this.loader = new LoaderView;
 
-	    this.$results.height($(window).height()-$("header").outerHeight(true)-$("#login_stuff").outerHeight(true)-$("#user").outerHeight(true)-15);
+	    this.$results.height($(window).height()-$("header").outerHeight()-$("#user").outerHeight()-$("footer").outerHeight());
 
             Friends.bind("add", this.append_friend);
             FrontPage.bind("logged_in", this.start_scrape);
