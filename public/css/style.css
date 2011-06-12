@@ -86,6 +86,36 @@ a:hover { color: #036; }
     \\ ========================================== //
 */
 
+@font-face {
+    font-family: "HelveticaLight";
+    src: local("☺"), url("/fonts/HelveticaNeue-Light.otf");
+}
+
+@font-face {
+    font-family: "HelveticaLightItalic";
+    src: local("☺"), url("/fonts/HelveticaNeue-LightItalic.otf");
+}
+
+@font-face {
+    font-family: "HelveticaBold";
+    src: local("☺"), url("/fonts/HelveticaNeue-CondensedBold.otf");
+}
+
+body, input {
+    font-family: "HelveticaLight";
+    color: black;
+}
+
+em {
+    font-family: "HelveticaLightItalic";
+}
+
+a {
+    -webkit-transition: all 200ms ease-in;
+    -moz-transition: all 200ms ease-in;
+    transition: all 200ms ease-in;
+}
+
 header {
     position: absolute;
     top: 0px;
@@ -96,12 +126,13 @@ header {
 }
 
 header #loader {
-    height: 60px;
+    height: 80px;
     max-height: 60px;
     overflow: hidden;
     position: absolute;
     top: 0px;
     left: 0px;
+    margin-bottom: -20px;
 }
 
 header #loader .item {
@@ -119,6 +150,17 @@ header #loader a {
 header #loader img {
     width: 60px;
     height: 60px;
+
+    -webkit-transition: all 300ms ease-in-out;
+    -moz-transition: all 300ms ease-in-out;
+    transition: all 300ms ease-in-out;
+}
+
+header #loader a:hover img {
+    width: 80px;
+    height: 80px;
+    margin-left: -10px;
+    margin-right: -10px;
 }
 
 
@@ -218,6 +260,8 @@ header #loader img {
     height: 1em;
     margin: 0;
     padding: 0;
+    font-size: 1.1em;
+    line-height: 1.2em;
 }
 
 #results li ul li.name {
@@ -289,6 +333,7 @@ header #loader img {
 #frontpage h1 {
     font-size: 2.5em;
     margin-bottom: 1em;
+    font-family: "HelveticaBold";
 }
 
 #frontpage div {
@@ -356,8 +401,8 @@ footer iframe {
     top: 5px;
 }
 
-footer a {
-    color: white;
+footer a, footer a:hover {
+    color: white !important;
 }
 
 

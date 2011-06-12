@@ -6,7 +6,7 @@
 <% } %>
 
 <div id="user">&nbsp;</div>
-<div id="user-template" style="display: none">Hello <a href="http://twitter.com/${screen_name}">${screen_name}</a>; I've found <span id="counter">0</span> of your friends on Github:</div>
+<div id="user-template" style="display: none">Hello <a href="http://twitter.com/${screen_name}">${screen_name}</a>; I've found <em id="counter">0</em> of your friends on Github:</div>
 
 <div id="frontpage">
    <div>
@@ -29,7 +29,9 @@
    <div id="countdown"></div>
 </div>
 
-<div id="friend-template" style="display: none" class="result">
+<div id="results">
+<ul style="display: none">
+<li id="friend-template" style="display: none" class="person">
   <a href="http://github.com/${login}" target="_blank">
      <img src="http://gravatar.com/avatar/${gravatar_id}" title="${login}" />
   <ul>
@@ -45,8 +47,8 @@
      <li>Followers: ${followers_count}</li>
   </ul>
   </a>
-</div>
+</li>
+</ul>
 
-<div id="results">
 
 </div>
